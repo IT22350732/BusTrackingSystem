@@ -7,8 +7,8 @@ Real-time GPS bus tracking system with operator dashboard and public rider view.
 | Layer | Technology |
 |-------|-----------|
 | Frontend | Next.js 15, TypeScript, Leaflet.js |
-| Backend | .NET 8 Minimal API, EF Core |
-| Database | SQLite |
+| Backend | .NET 8 Minimal API, MongoDB C# Driver |
+| Database | MongoDB Atlas (`bus_tracking`) |
 | Real-time | SignalR (WebSocket) |
 | Auth | JWT Bearer Tokens |
 

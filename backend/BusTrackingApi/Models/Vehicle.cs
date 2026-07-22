@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace BusTrackingApi.Models;
 
@@ -14,6 +16,7 @@ public enum VehicleStatus
 public class Vehicle
 {
     [Key]
+    [BsonId]
     public int Id { get; set; }
 
     [Required]
@@ -31,6 +34,7 @@ public class Vehicle
     [MaxLength(100)]
     public string? DeviceModel { get; set; }
 
+    [BsonRepresentation(BsonType.String)]
     public VehicleStatus Status { get; set; } = VehicleStatus.Active;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

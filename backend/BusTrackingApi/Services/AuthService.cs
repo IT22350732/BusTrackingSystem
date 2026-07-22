@@ -3,17 +3,17 @@ using System.Security.Claims;
 using System.Text;
 using BusTrackingApi.Data;
 using BusTrackingApi.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Driver;
 
 namespace BusTrackingApi.Services;
 
 public class AuthService
 {
-    private readonly AppDbContext _context;
+    private readonly MongoDbContext _context;
     private readonly IConfiguration _configuration;
 
-    public AuthService(AppDbContext context, IConfiguration configuration)
+    public AuthService(MongoDbContext context, IConfiguration configuration)
     {
         _context = context;
         _configuration = configuration;
@@ -21,7 +21,7 @@ public class AuthService
 
     public async Task<(string? Token, string? Error)> LoginAsync(string email, string password)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        var user = await _context.Users.Find(u => u.Email == email).FirstOrDefaultAsync();
         if (user == null)
             return (null, "Invalid email or password");
 
@@ -35,19 +35,21 @@ public class AuthService
     public async Task<(string? Token, string? Error)> RegisterAsync(string name, string email, string password)
     {
         // Check if email already exists
-        if (await _context.Users.AnyAsync(u => u.Email == email))
+        var existing = await _context.Users.Find(u => u.Email == email).FirstOrDefaultAsync();
+        if (existing != null)
             return (null, "An account with this email already exists");
 
+        var nextId = await _context.GetNextSequenceAsync("users");
         var user = new User
         {
+            Id = nextId,
             Name = name,
             Email = email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
             CreatedAt = DateTime.UtcNow
         };
 
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
+        await _context.Users.InsertOneAsync(user);
 
         var token = GenerateJwtToken(user);
         return (token, null);

@@ -1,18 +1,18 @@
 using BusTrackingApi.Data;
 using BusTrackingApi.Models;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 namespace BusTrackingApi.Services;
 
 public class BookingService
 {
-    private readonly AppDbContext _context;
+    private readonly MongoDbContext _context;
 
     // Sri Lanka timezone for date comparison
     private static readonly TimeZoneInfo SriLankaTimeZone =
         TimeZoneInfo.FindSystemTimeZoneById("Asia/Colombo");
 
-    public BookingService(AppDbContext context)
+    public BookingService(MongoDbContext context)
     {
         _context = context;
     }
@@ -40,7 +40,7 @@ public class BookingService
             return (null, "Cannot book a ticket for a past date");
 
         // Validate vehicle exists and is active
-        var vehicle = await _context.Vehicles.FindAsync(request.VehicleId);
+        var vehicle = await _context.Vehicles.Find(v => v.Id == request.VehicleId).FirstOrDefaultAsync();
         if (vehicle == null)
             return (null, "Vehicle not found");
 
@@ -48,17 +48,19 @@ public class BookingService
             return (null, $"Vehicle {vehicle.BusNumber} is not active");
 
         // Check for duplicate booking
-        var existingBooking = await _context.Bookings.AnyAsync(b =>
+        var existingBooking = await _context.Bookings.Find(b =>
             b.UserId == userId &&
             b.VehicleId == request.VehicleId &&
-            b.TravelDate == travelDate);
+            b.TravelDate == travelDate).AnyAsync();
 
         if (existingBooking)
             return (null, "You already have a booking for this bus on this date");
 
         // Create booking
+        var nextId = await _context.GetNextSequenceAsync("bookings");
         var booking = new Booking
         {
+            Id = nextId,
             UserId = userId,
             VehicleId = request.VehicleId,
             TravelDate = travelDate,
@@ -67,8 +69,7 @@ public class BookingService
             BookedAt = DateTime.UtcNow
         };
 
-        _context.Bookings.Add(booking);
-        await _context.SaveChangesAsync();
+        await _context.Bookings.InsertOneAsync(booking);
 
         return (MapToResponse(booking, vehicle), null);
     }
@@ -78,16 +79,17 @@ public class BookingService
     /// </summary>
     public async Task<List<BookingResponse>> GetUserBookingsAsync(int userId)
     {
-        var bookings = await _context.Bookings
-            .Include(b => b.Vehicle)
-            .Where(b => b.UserId == userId)
-            .OrderByDescending(b => b.TravelDate)
-            .ThenBy(b => b.DepartureTime)
-            .ToListAsync();
+        var bookings = await _context.Bookings.Find(b => b.UserId == userId).ToListAsync();
+        
+        var vehicleIds = bookings.Select(b => b.VehicleId).Distinct().ToList();
+        var vehicles = await _context.Vehicles.Find(v => vehicleIds.Contains(v.Id)).ToListAsync();
+        var vehicleMap = vehicles.ToDictionary(v => v.Id);
 
         return bookings
-            .Where(b => b.Vehicle != null)
-            .Select(b => MapToResponse(b, b.Vehicle!))
+            .Where(b => vehicleMap.ContainsKey(b.VehicleId))
+            .OrderByDescending(b => b.TravelDate)
+            .ThenBy(b => b.DepartureTime)
+            .Select(b => MapToResponse(b, vehicleMap[b.VehicleId]))
             .ToList();
     }
 
@@ -98,17 +100,26 @@ public class BookingService
     public async Task<TrackingAccessResponse> ValidateTrackingAccessAsync(int userId, int vehicleId)
     {
         var booking = await _context.Bookings
-            .Include(b => b.Vehicle)
-            .Where(b => b.UserId == userId && b.VehicleId == vehicleId)
-            .OrderByDescending(b => b.TravelDate)
+            .Find(b => b.UserId == userId && b.VehicleId == vehicleId)
+            .SortByDescending(b => b.TravelDate)
             .FirstOrDefaultAsync();
 
-        if (booking == null || booking.Vehicle == null)
+        if (booking == null)
         {
             return new TrackingAccessResponse
             {
                 Allowed = false,
                 Message = "No booking found for this bus. Please book a ticket first."
+            };
+        }
+
+        var vehicle = await _context.Vehicles.Find(v => v.Id == vehicleId).FirstOrDefaultAsync();
+        if (vehicle == null)
+        {
+            return new TrackingAccessResponse
+            {
+                Allowed = false,
+                Message = "Vehicle details not found."
             };
         }
 
@@ -120,7 +131,7 @@ public class BookingService
             {
                 Allowed = false,
                 Message = $"Tracking will be available on your travel date ({booking.TravelDate:yyyy-MM-dd})",
-                Booking = MapToResponse(booking, booking.Vehicle)
+                Booking = MapToResponse(booking, vehicle)
             };
         }
 
@@ -130,7 +141,7 @@ public class BookingService
             {
                 Allowed = false,
                 Message = "Trip has already completed",
-                Booking = MapToResponse(booking, booking.Vehicle)
+                Booking = MapToResponse(booking, vehicle)
             };
         }
 
@@ -139,7 +150,7 @@ public class BookingService
         {
             Allowed = true,
             Message = "Tracking access granted",
-            Booking = MapToResponse(booking, booking.Vehicle)
+            Booking = MapToResponse(booking, vehicle)
         };
     }
 

@@ -4,14 +4,12 @@ using BusTrackingApi.Endpoints;
 using BusTrackingApi.Hubs;
 using BusTrackingApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- Database ---
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+// --- Database (MongoDB Atlas) ---
+builder.Services.AddSingleton<MongoDbContext>();
 
 // --- Authentication (JWT) ---
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "BusTracker_SuperSecret_Key_2024_!@#$%^&*()_MinLength32Chars";
@@ -99,7 +97,7 @@ app.MapHub<LocationHub>("/hubs/location");
 // --- Database Migration & Seed ---
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var context = scope.ServiceProvider.GetRequiredService<MongoDbContext>();
     await SeedData.Initialize(context);
 }
 

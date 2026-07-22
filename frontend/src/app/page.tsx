@@ -12,8 +12,11 @@ export default function Home() {
           BusTracker
         </div>
         <div className={styles['landing-nav-links']}>
+          <Link href="/book" className="btn btn-ghost">
+            🎟️ Book Ticket
+          </Link>
           <Link href="/track" className="btn btn-ghost">
-            Track a Bus
+            🗺️ Track Bus
           </Link>
           <Link href="/login" className="btn btn-primary btn-sm">
             Operator Login
@@ -26,7 +29,7 @@ export default function Home() {
         <div className={styles['hero-content']}>
           <div className={styles['hero-badge']}>
             <span className={styles['pulse-dot']} />
-            Live Tracking Active
+            Ticket-Based Real-Time Tracking
           </div>
           <h1 className={styles['hero-title']}>
             Know Where Your{' '}
@@ -34,15 +37,14 @@ export default function Home() {
             {' '}Right Now
           </h1>
           <p className={styles['hero-subtitle']}>
-            Real-time GPS tracking for public transit. See live bus locations,
-            routes, and arrival updates — all from your phone or desktop.
+            Book a bus ticket and access live GPS tracking on your travel date. Real-time updates, route details, and instant bus locations.
           </p>
           <div className={styles['hero-actions']}>
-            <Link href="/track" className="btn btn-primary btn-lg">
-              🗺️ Track a Bus Now
+            <Link href="/book" className="btn btn-primary btn-lg">
+              🎟️ Book a Ticket
             </Link>
-            <Link href="/login" className="btn btn-secondary btn-lg">
-              🔐 Operator Dashboard
+            <Link href="/track" className="btn btn-secondary btn-lg">
+              🗺️ Track My Bus
             </Link>
           </div>
         </div>
@@ -52,27 +54,24 @@ export default function Home() {
       <section className={styles['landing-features']}>
         <div className={styles['features-grid']}>
           <div className={`${styles['feature-card']} glass-card`}>
-            <div className={styles['feature-icon']}>📍</div>
-            <h3>Live Location</h3>
+            <div className={styles['feature-icon']}>🎟️</div>
+            <h3>Ticket Restricted</h3>
             <p>
-              See your bus moving on the map in real-time with updates every 5
-              seconds. Never miss your bus again.
+              Secure live tracking restricted strictly to riders with a valid booking for today's travel date.
             </p>
           </div>
           <div className={`${styles['feature-card']} glass-card`}>
-            <div className={styles['feature-icon']}>🛣️</div>
-            <h3>Route Information</h3>
+            <div className={styles['feature-icon']}>📍</div>
+            <h3>Live Location</h3>
             <p>
-              View route details, bus numbers, and current status. Select any
-              bus to track it on the interactive map.
+              See your bus moving on the interactive Leaflet map in real-time with automatic 5-second SignalR updates.
             </p>
           </div>
           <div className={`${styles['feature-card']} glass-card`}>
             <div className={styles['feature-icon']}>📊</div>
             <h3>Fleet Dashboard</h3>
             <p>
-              Operators can manage vehicles, monitor fleet status, and view all
-              buses on a single dashboard.
+              Operators can manage vehicles, monitor live fleet status, and track active buses across Sri Lanka.
             </p>
           </div>
         </div>
@@ -80,7 +79,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className={styles['landing-footer']}>
-        <p>© 2024 Bus Tracking System — Sample Demo Application</p>
+        <p>© 2024 Bus Tracking System — Ticket-Based Fleet Monitoring</p>
       </footer>
     </div>
   );

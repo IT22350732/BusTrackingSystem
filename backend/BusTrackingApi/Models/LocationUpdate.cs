@@ -1,17 +1,20 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace BusTrackingApi.Models;
 
 public class LocationUpdate
 {
     [Key]
+    [BsonId]
     public int Id { get; set; }
 
     [Required]
     public int VehicleId { get; set; }
 
     [ForeignKey(nameof(VehicleId))]
+    [BsonIgnore]
     public Vehicle? Vehicle { get; set; }
 
     [Required]

@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace BusTrackingApi.Models;
 
 public class User
 {
     [Key]
+    [BsonId]
     public int Id { get; set; }
 
     [Required]
