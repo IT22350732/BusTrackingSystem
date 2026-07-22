@@ -35,6 +35,7 @@ public class MongoDbContext
     public MongoDbContext(IConfiguration configuration)
     {
         var connectionString = configuration["MongoDb:ConnectionString"]
+            ?? Environment.GetEnvironmentVariable("MONGODB_URI")
             ?? "mongodb+srv://menda:menda@clustermendis.eqm7p.mongodb.net/?retryWrites=true&w=majority&appName=Clustermendis";
         var databaseName = configuration["MongoDb:DatabaseName"] ?? "bus_tracking";
 

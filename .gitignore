@@ -1,0 +1,25 @@
+# .NET & C# build artifacts
+**/bin/
+**/obj/
+*.user
+*.userosscache
+*.sln.docstates
+
+# Sensitive local configurations
+**/appsettings.Development.json
+**/*.env
+**/*.env.local
+
+# Node.js
+**/node_modules/
+**/.next/
+**/out/
+
+# Database files
+**/*.db
+**/*.db-shm
+**/*.db-wal
+
+# OS files
+.DS_Store
+Thumbs.db
