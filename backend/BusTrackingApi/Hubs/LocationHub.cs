@@ -1,9 +1,18 @@
+using System.Security.Claims;
+using BusTrackingApi.Services;
 using Microsoft.AspNetCore.SignalR;
 
 namespace BusTrackingApi.Hubs;
 
 public class LocationHub : Hub
 {
+    private readonly BookingService _bookingService;
+
+    public LocationHub(BookingService bookingService)
+    {
+        _bookingService = bookingService;
+    }
+
     public override async Task OnConnectedAsync()
     {
         await base.OnConnectedAsync();
@@ -15,10 +24,25 @@ public class LocationHub : Hub
     }
 
     /// <summary>
-    /// Allows a client to subscribe to updates for a specific vehicle
+    /// Allows a client to subscribe to updates for a specific vehicle.
+    /// Validates the user has a valid booking for today before allowing subscription.
     /// </summary>
     public async Task SubscribeToVehicle(int vehicleId)
     {
+        var userIdClaim = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userIdClaim == null || !int.TryParse(userIdClaim, out var userId))
+        {
+            throw new HubException("Authentication required. Please log in to track buses.");
+        }
+
+        var result = await _bookingService.ValidateTrackingAccessAsync(userId, vehicleId);
+
+        if (!result.Allowed)
+        {
+            throw new HubException(result.Message);
+        }
+
         await Groups.AddToGroupAsync(Context.ConnectionId, $"vehicle-{vehicleId}");
     }
 
@@ -30,3 +54,4 @@ public class LocationHub : Hub
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"vehicle-{vehicleId}");
     }
 }
+

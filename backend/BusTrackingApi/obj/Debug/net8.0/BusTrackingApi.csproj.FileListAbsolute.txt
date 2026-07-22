@@ -141,3 +141,4 @@
 /Users/menda/Desktop/BTS/BusTrackingSystem/backend/BusTrackingApi/obj/Debug/net8.0/BusTrackingApi.pdb
 /Users/menda/Desktop/BTS/BusTrackingSystem/backend/BusTrackingApi/obj/Debug/net8.0/BusTrackingApi.genruntimeconfig.cache
 /Users/menda/Desktop/BTS/BusTrackingSystem/backend/BusTrackingApi/obj/Debug/net8.0/ref/BusTrackingApi.dll
+/Users/menda/Desktop/BTS/BusTrackingSystem/backend/BusTrackingApi/obj/Debug/net8.0/BusTrackingApi.sourcelink.json

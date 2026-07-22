@@ -58,3 +58,28 @@ export interface AuthState {
 export interface ApiError {
   error: string;
 }
+
+// --- Booking ---
+export interface Booking {
+  id: number;
+  vehicleId: number;
+  busNumber: string;
+  routeName: string;
+  travelDate: string;
+  departureTime: string;
+  arrivalTime: string;
+  bookedAt: string;
+}
+
+export interface CreateBookingRequest {
+  vehicleId: number;
+  travelDate: string; // "yyyy-MM-dd"
+  departureTime: string; // "HH:mm"
+  arrivalTime: string; // "HH:mm"
+}
+
+export interface TrackingAccessResult {
+  allowed: boolean;
+  message: string;
+  booking?: Booking;
+}

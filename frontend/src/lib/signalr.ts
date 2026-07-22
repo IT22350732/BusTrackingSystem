@@ -14,7 +14,14 @@ let connection: signalR.HubConnection | null = null;
 export function getConnection(): signalR.HubConnection {
   if (!connection) {
     connection = new signalR.HubConnectionBuilder()
-      .withUrl(HUB_URL)
+      .withUrl(HUB_URL, {
+        accessTokenFactory: () => {
+          if (typeof window !== 'undefined') {
+            return localStorage.getItem('auth_token') || '';
+          }
+          return '';
+        },
+      })
       .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
       .configureLogging(signalR.LogLevel.Warning)
       .build();

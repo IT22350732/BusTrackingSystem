@@ -42,6 +42,13 @@ class ApiClient {
     });
   }
 
+  async register(name: string, email: string, password: string) {
+    return this.request<{ token: string; message: string }>('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ name, email, password }),
+    });
+  }
+
   // --- Vehicles ---
   async getVehicles() {
     return this.request<import('@/types').Vehicle[]>('/api/vehicles');
@@ -79,6 +86,23 @@ class ApiClient {
   async getVehicleLocation(vehicleId: number) {
     return this.request<import('@/types').LocationData>(`/api/location/${vehicleId}`);
   }
+
+  // --- Bookings ---
+  async createBooking(booking: import('@/types').CreateBookingRequest) {
+    return this.request<import('@/types').Booking>('/api/bookings', {
+      method: 'POST',
+      body: JSON.stringify(booking),
+    });
+  }
+
+  async getMyBookings() {
+    return this.request<import('@/types').Booking[]>('/api/bookings');
+  }
+
+  async validateTrackingAccess(vehicleId: number) {
+    return this.request<import('@/types').TrackingAccessResult>(`/api/tracking/${vehicleId}/validate`);
+  }
 }
 
 export const api = new ApiClient();
+

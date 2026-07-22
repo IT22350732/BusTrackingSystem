@@ -10,6 +10,7 @@ public class AppDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<Vehicle> Vehicles => Set<Vehicle>();
     public DbSet<LocationUpdate> LocationUpdates => Set<LocationUpdate>();
+    public DbSet<Booking> Bookings => Set<Booking>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,6 +30,22 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<LocationUpdate>(entity =>
         {
             entity.HasIndex(e => e.VehicleId);
+        });
+
+        modelBuilder.Entity<Booking>(entity =>
+        {
+            // Prevent duplicate bookings for same user, vehicle, and date
+            entity.HasIndex(e => new { e.UserId, e.VehicleId, e.TravelDate }).IsUnique();
+
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Vehicle)
+                .WithMany()
+                .HasForeignKey(e => e.VehicleId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

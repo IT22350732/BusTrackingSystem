@@ -32,6 +32,27 @@ public class AuthService
         return (token, null);
     }
 
+    public async Task<(string? Token, string? Error)> RegisterAsync(string name, string email, string password)
+    {
+        // Check if email already exists
+        if (await _context.Users.AnyAsync(u => u.Email == email))
+            return (null, "An account with this email already exists");
+
+        var user = new User
+        {
+            Name = name,
+            Email = email,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+
+        var token = GenerateJwtToken(user);
+        return (token, null);
+    }
+
     private string GenerateJwtToken(User user)
     {
         var key = new SymmetricSecurityKey(

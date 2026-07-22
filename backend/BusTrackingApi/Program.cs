@@ -28,6 +28,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = builder.Configuration["Jwt:Audience"] ?? "BusTrackingApp",
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
+
+        // Allow SignalR to read JWT from query string (WebSocket connections)
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
 builder.Services.AddAuthorization();
 
@@ -50,6 +65,7 @@ builder.Services.AddSignalR();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<VehicleService>();
 builder.Services.AddScoped<LocationService>();
+builder.Services.AddScoped<BookingService>();
 
 // --- GPS Simulator (Background Service) ---
 builder.Services.AddHostedService<SimulatorService>();
@@ -75,6 +91,7 @@ app.UseAuthorization();
 app.MapAuthEndpoints();
 app.MapVehicleEndpoints();
 app.MapLocationEndpoints();
+app.MapBookingEndpoints();
 
 // --- Map SignalR Hub ---
 app.MapHub<LocationHub>("/hubs/location");
