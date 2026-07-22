@@ -1,0 +1,375 @@
+/* ==========================================
+   Bus Tracking System — Design System
+   Premium Dark Theme with Glassmorphism
+   ========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* --- CSS Custom Properties --- */
+:root {
+  /* Color Palette */
+  --color-bg-primary: #0a0e1a;
+  --color-bg-secondary: #111827;
+  --color-bg-tertiary: #1a2237;
+  --color-bg-card: rgba(17, 24, 39, 0.8);
+  --color-bg-glass: rgba(17, 24, 39, 0.65);
+  --color-bg-glass-hover: rgba(26, 34, 55, 0.85);
+  --color-bg-input: rgba(26, 34, 55, 0.6);
+
+  /* Accent Colors */
+  --color-accent: #06d6a0;
+  --color-accent-hover: #05c493;
+  --color-accent-glow: rgba(6, 214, 160, 0.3);
+  --color-accent-soft: rgba(6, 214, 160, 0.1);
+
+  /* Secondary Accent */
+  --color-secondary: #118ab2;
+  --color-secondary-hover: #0f7ea3;
+
+  /* Status Colors */
+  --color-online: #06d6a0;
+  --color-offline: #ef476f;
+  --color-maintenance: #ffd166;
+  --color-inactive: #6b7280;
+
+  /* Text Colors */
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+  --color-text-accent: #06d6a0;
+
+  /* Border */
+  --color-border: rgba(148, 163, 184, 0.12);
+  --color-border-hover: rgba(6, 214, 160, 0.3);
+
+  /* Danger */
+  --color-danger: #ef476f;
+  --color-danger-hover: #dc2757;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* Border Radius */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px var(--color-accent-glow);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Z-index */
+  --z-sidebar: 100;
+  --z-header: 200;
+  --z-modal: 300;
+  --z-toast: 400;
+}
+
+/* --- Global Reset & Base --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-accent-hover);
+}
+
+/* --- Scrollbar --- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-text-muted);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* --- Animations --- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 5px var(--color-accent-glow); }
+  50% { box-shadow: 0 0 20px var(--color-accent-glow), 0 0 40px rgba(6, 214, 160, 0.15); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes markerPulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.5; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.4s ease forwards;
+}
+
+/* --- Glass Card --- */
+.glass-card {
+  background: var(--color-bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+}
+
+.glass-card:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-glow);
+}
+
+/* --- Gradient Background --- */
+.gradient-bg {
+  background: linear-gradient(135deg, var(--color-bg-primary) 0%, #0f1629 50%, #0a1628 100%);
+}
+
+.gradient-accent {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* --- Utility --- */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Map Container Fix --- */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg-primary) !important;
+  border-radius: var(--radius-lg);
+}
+
+/* Custom Leaflet popup styling */
+.leaflet-popup-content-wrapper {
+  background: var(--color-bg-secondary) !important;
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-lg) !important;
+  backdrop-filter: blur(10px);
+}
+
+.leaflet-popup-tip {
+  background: var(--color-bg-secondary) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+.leaflet-popup-close-button {
+  color: var(--color-text-secondary) !important;
+}
+
+.leaflet-popup-close-button:hover {
+  color: var(--color-text-primary) !important;
+}
+
+/* Custom bus marker popup */
+.bus-popup {
+  padding: var(--space-sm);
+}
+
+.bus-popup h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: var(--space-xs);
+  color: var(--color-text-primary);
+}
+
+.bus-popup .route {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.bus-popup .details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  font-size: 0.8rem;
+}
+
+.bus-popup .detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.bus-popup .detail-label {
+  color: var(--color-text-muted);
+}
+
+.bus-popup .detail-value {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.bus-popup .status-online {
+  color: var(--color-online);
+  font-weight: 600;
+}
+
+.bus-popup .status-offline {
+  color: var(--color-offline);
+  font-weight: 600;
+}
+
+/* --- Custom Bus Marker --- */
+.bus-marker-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bus-marker-icon .pulse-ring {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  animation: markerPulse 2s ease-out infinite;
+}
+
+.bus-marker-icon.online .pulse-ring {
+  background: var(--color-online);
+}
+
+.bus-marker-icon.offline .pulse-ring {
+  background: var(--color-offline);
+  animation: none;
+  opacity: 0;
+}
+
+/* --- Responsive Breakpoints --- */
+@media (max-width: 768px) {
+  :root {
+    --space-lg: 1rem;
+    --space-xl: 1.5rem;
+    --space-2xl: 2rem;
+  }
+
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --space-lg: 0.75rem;
+    --space-xl: 1rem;
+    --space-2xl: 1.5rem;
+  }
+}

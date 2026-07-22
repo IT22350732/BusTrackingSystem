@@ -1,0 +1,127 @@
+/* ==========================================
+   Login Page Styles
+   ========================================== */
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  background: linear-gradient(160deg, #0a0e1a 0%, #0f1629 40%, #0a1628 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-page::before {
+  content: '';
+  position: absolute;
+  top: -300px;
+  left: -300px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(6, 214, 160, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.login-page::after {
+  content: '';
+  position: absolute;
+  bottom: -200px;
+  right: -200px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(17, 138, 178, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  animation: fadeInUp 0.6s ease forwards;
+  position: relative;
+  z-index: 10;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: var(--space-2xl);
+}
+
+.login-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
+  border-radius: var(--radius-lg);
+  font-size: 2rem;
+  margin-bottom: var(--space-lg);
+}
+
+.login-header h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: var(--space-xs);
+}
+
+.login-header p {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.login-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.login-submit {
+  margin-top: var(--space-sm);
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: var(--space-xl);
+}
+
+.login-footer a {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  transition: color var(--transition-fast);
+}
+
+.login-footer a:hover {
+  color: var(--color-accent);
+}
+
+.login-demo-info {
+  margin-top: var(--space-lg);
+  padding: var(--space-md);
+  background: rgba(6, 214, 160, 0.05);
+  border: 1px solid rgba(6, 214, 160, 0.15);
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.login-demo-info strong {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.login-demo-info code {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-text-primary);
+}
