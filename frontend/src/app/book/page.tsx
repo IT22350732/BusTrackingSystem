@@ -46,6 +46,7 @@ export default function BookTicketPage() {
         }
       } catch (err) {
         console.error('Failed to load data:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load data from server');
       } finally {
         setLoading(false);
       }

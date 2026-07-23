@@ -58,12 +58,13 @@ public class AuthService
     private string GenerateJwtToken(User user)
     {
         var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? "BusTracker_SuperSecret_Key_2024_!@#$%^&*()_MinLength32"));
+            Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? "BusTracker_SuperSecret_Key_2024_!@#$%^&*()_MinLength32Chars"));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim("sub", user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.Name, user.Name),
             new Claim(ClaimTypes.Role, "Operator")

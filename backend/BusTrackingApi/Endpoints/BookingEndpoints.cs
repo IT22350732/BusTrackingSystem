@@ -57,7 +57,10 @@ public static class BookingEndpoints
 
     private static int? GetUserId(HttpContext httpContext)
     {
-        var userIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+            ?? httpContext.User.FindFirst("sub")?.Value
+            ?? httpContext.User.FindFirst("nameid")?.Value
+            ?? httpContext.User.FindFirst("id")?.Value;
         return int.TryParse(userIdClaim, out var userId) ? userId : null;
     }
 }

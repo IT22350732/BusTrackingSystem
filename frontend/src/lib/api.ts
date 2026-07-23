@@ -21,17 +21,27 @@ class ApiClient {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${API_BASE_URL}${path}`, {
-      ...options,
-      headers,
-    });
+    try {
+      const response = await fetch(`${API_BASE_URL}${path}`, {
+        ...options,
+        headers,
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Request failed' }));
-      throw new Error(errorData.error || `HTTP ${response.status}`);
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Unauthorized session. Please log out and log in again to refresh your security token.');
+        }
+        const errorData = await response.json().catch(() => ({ error: 'Request failed' }));
+        throw new Error(errorData.error || `HTTP ${response.status}`);
+      }
+
+      return response.json();
+    } catch (err: any) {
+      if (err instanceof TypeError && (err.message.includes('fetch') || err.message.includes('NetworkError') || err.message.includes('Failed to fetch'))) {
+        throw new Error(`Unable to connect to backend server at ${API_BASE_URL}. Please ensure the backend server is running.`);
+      }
+      throw err;
     }
-
-    return response.json();
   }
 
   // --- Auth ---
